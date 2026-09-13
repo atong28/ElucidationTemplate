@@ -1,3 +1,12 @@
-.DS_Store
-__MACOSX/
-*.tmp
+# This repository is only a launcher. Nothing but the scaffolding is tracked:
+# data you place here for upload is ignored on purpose.
+*
+!.gitignore
+!.mcp.json
+!CLAUDE.md
+!README.md
+!scripts/
+!scripts/*.sh
+!.claude/
+!.claude/commands/
+!.claude/commands/*.md

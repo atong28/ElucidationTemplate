@@ -1,29 +1,24 @@
-# Elucidation template
+# Elucidation launcher
 
-A starter repository for running a chemist-in-the-loop NMR structure elucidation in
-**Claude Code** (web or local). Nothing runs here: the board, the chemistry tools and the
-raw-spectra processing are on the ElucidationSandbox server, reached through the MCP
-connector in `.mcp.json` and the board's HTTP API. This repo holds your data and tells
-the agent how to use them.
+A minimal repository whose only job is to open **Claude Code** (web or local) with the
+structure-elucidation connector configured and two helper scripts on the path. It is not
+a workspace: nothing you put here is tracked, and nothing runs here. The board, the
+chemistry tools and the raw-spectra processing are on the ElucidationSandbox server.
 
 ## Use it
-1. **Use this template** → create your own (private) repository from it.
-2. Put your data in `data/` (see `data/README.md`): raw Bruker/Varian folders, zipped or
-   not, JCAMP-DX, CSV exports, peak lists, images, notes. No structures or names.
-3. Open the repository in Claude Code. On the web, allow outbound access to
-   `mcp.anthony-tong.com` and `board.anthony-tong.com` in the environment settings.
-4. Type `/elucidate`. The agent creates a board session, uploads `data/` to it, processes the
-   spectra server-side, and gives you the board link. Review and reply on the board; the
-   agent picks your feedback up each round.
+1. Create a repository from this template (or just clone it).
+2. Open it in Claude Code. On the web, allow outbound access to `mcp.anthony-tong.com`
+   and `board.anthony-tong.com` in the environment settings.
+3. Type `/elucidate`. Tell the agent where your data is: a local path, a URL, or a session
+   where you already attached it on the board. The agent uploads it to the board session
+   and processes it server-side, then hands you the board link.
 
-## What the agent does
-- Fetches the live protocol from `https://mcp.anthony-tong.com/prompt` (not vendored here,
-  so it cannot drift from the server).
-- `scripts/new-session.sh` creates a session; `scripts/upload.sh` zips and posts your data
-  to the board chat in one call — that is what makes it visible to the server-side tools.
-- Processing, peak picking, deconvolution and curation all happen on the server
-  (`list_spectra`, `process_spectrum`, `pick_peaks`, `view_spectrum`, `fit_region`,
-  `tabulate_peaks`). The agent never parses instrument files itself.
+## What is here
+- `.mcp.json` — the connector (28 tools: chemistry, board, raw spectra).
+- `scripts/new-session.sh` — create a session, print id and link.
+- `scripts/upload.sh <session> <file|dir|url> [note]` — get data onto the board chat in one
+  call, which is the only way the server-side tools can see it.
+- `CLAUDE.md` / `.claude/commands/elucidate.md` — the agent's instructions; the full protocol
+  is fetched live from `https://mcp.anthony-tong.com/prompt`.
 
-## Self-hosted server
-Set `BOARD_URL` for the scripts and edit the `url` in `.mcp.json`.
+Self-hosted server: set `BOARD_URL` for the scripts and edit the `url` in `.mcp.json`.
