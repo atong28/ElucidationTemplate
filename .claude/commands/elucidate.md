@@ -1,9 +1,13 @@
 Run a structure elucidation on the board.
 
-1. Fetch the protocol with `curl -s https://mcp.anthony-tong.com/prompt` and follow it.
-2. Ask the chemist for a session id if they have one; otherwise call `start_session` with a short
-   working title and tell them the board link `https://board.anthony-tong.com/?session=<id>`.
-3. Ask where the data is (a path, a URL, or already attached on the board). If it is not on the
-   board yet (`get_board_state` → chat[] has no attachments), run
-   `scripts/upload.sh <session_id> <path-or-url> "<what it is>"`, then `list_spectra`.
-4. Continue with the protocol: process, pick, post, conclude the round, wait for the chemist.
+1. The canonical start is the text the chemist copies from the board's **Connect agent**
+   button; it carries the session id. If $ARGUMENTS or the conversation contains it, use that id.
+   If not, ask the chemist to create the session on https://board.anthony-tong.com, upload their
+   data there and paste the Connect-agent text. (Only if they insist on starting here:
+   `start_session(title=...)` and give them the board link it returns.)
+2. Call `start_session(session_id=...)`. It returns the operating protocol: follow it for the
+   whole session.
+3. If the chemist points you at data that is not on the board yet (a local path or URL), upload
+   it first: `scripts/upload.sh <session_id> <path-or-url> "<what it is>"`.
+4. `begin_turn` → work the phases the data serves → `end_turn` with your question and the next
+   experiment. Then wait for the chemist.

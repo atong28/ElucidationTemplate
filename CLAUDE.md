@@ -1,28 +1,33 @@
 # Elucidation launcher
 
-This repository exists only so a chemist can open Claude Code with the structure
-elucidation connector and the upload scripts in place. It is not a workspace: nothing
-placed here is tracked, and no state is kept between sessions. The board, the chemistry
-tools and all raw-spectra processing live on a remote server reached through the
-`elucidation` MCP connector (`.mcp.json`) and the board's HTTP API.
+This repository exists only so Claude Code opens with the structure-elucidation connector
+(`.mcp.json` → `elucidation`) and an upload script in place. It is not a workspace: nothing
+placed here is tracked and no state is kept. The board, the chemistry tools and all spectra
+processing live on the server.
+
+## How a session starts
+Sessions start **on the board** (https://board.anthony-tong.com). The chemist creates one,
+uploads their data there, clicks **Connect agent** and pastes that text to you. It carries the
+session id. Then:
+
+1. `start_session(session_id="<id from the pasted text>")`. It returns the operating
+   **protocol**: read it and follow it for the whole session.
+2. `begin_turn(session_id, focus_phase)` → work the phases → `end_turn(...)`, every turn.
+
+If the chemist starts you without that text, ask them to create the session on the board and
+paste its Connect-agent text. Only if they insist on starting here: `start_session(title=...)`
+creates an empty session, and you give them its board link.
 
 ## The one rule about data
-The server only processes what is **attached in the board chat**. Files in this
-conversation, on this machine or at a URL are invisible to it until uploaded with
-`scripts/upload.sh`. Never process instrument files by hand and never guess peak lists
-from file contents: upload, then use the tools.
+The tools see only what is uploaded to the session. Files on this machine, in this
+conversation or at a URL are invisible to the server until uploaded:
 
-## Flow (`/elucidate` runs it)
-1. Fetch the current operating protocol and follow it: `curl -s https://mcp.anthony-tong.com/prompt`
-2. Session: if the chemist gives a session id, adopt it with `start_session(session_id=...)`;
-   otherwise create one with `start_session` (or `scripts/new-session.sh "<title>"`) and
-   tell them the link `https://board.anthony-tong.com/?session=<id>`.
-3. Data: ask where it is if not obvious. Then
-   `scripts/upload.sh <session_id> <file | directory | URL> "<short description>"`.
-   Directories are zipped, URLs downloaded, nested zips opened server-side.
-4. `list_spectra` → `process_spectrum` → `pick_peaks` → `view_spectrum` / `fit_region` /
-   `tabulate_peaks`; post peak tables; work round by round; every turn opens a round and
-   ends with `conclude_round`.
+    scripts/upload.sh <session_id> <file | directory | URL> "<what it is>"
+
+Directories are zipped, URLs downloaded, nested zips opened server-side. After an upload,
+`list_datasets` catalogues and processes the spectra. Never process instrument files by hand.
+Peak lists in any format (text, exports, images or PDFs of SI tables): upload them, read them
+with `read_upload` and record them with `import_peak_list`.
 
 ## Notes
 - Claude Code on the web restricts outbound network; the environment must allow

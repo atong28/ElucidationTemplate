@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Get instrument data onto a board session so the server-side tools can see it.
+# Upload data to a board session so the server-side tools can see it (logged as the agent's upload).
 #   scripts/upload.sh <session_id> <file | directory | URL> [note]
 # A directory is zipped first (top-level folder kept). A URL is downloaded first.
 # A file is sent as-is. Zips inside zips are fine; the server opens them.
@@ -21,5 +21,5 @@ size=$(stat -c %s "$SRC" 2>/dev/null || stat -f %z "$SRC")
 if [ "$size" -gt $((250 * 1024 * 1024)) ]; then
   echo "too large ($size bytes); the board accepts 250 MB per attachment — split it" >&2; exit 1
 fi
-curl -sS -F "file=@$SRC" ${NOTE:+-F "note=$NOTE"} "$BOARD/api/sessions/$SID/uploads?post=1"
+curl -sS -F "file=@$SRC" ${NOTE:+-F "note=$NOTE"} "$BOARD/api/sessions/$SID/uploads?author=agent"
 echo
