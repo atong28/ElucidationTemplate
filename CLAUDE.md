@@ -31,6 +31,8 @@ with `read_upload` and record them with `import_peak_list`.
 
 ## Notes
 - Claude Code on the web restricts outbound network; the environment must allow
-  `mcp.anthony-tong.com` and `board.anthony-tong.com`.
+  `mcp.anthony-tong.com` and `board.anthony-tong.com`, and PyPI for RDKit (a SessionStart
+  hook installs it; if it reports that it could not, say so to the chemist rather than
+  working around it by hand-editing structures).
 - `BOARD_URL` overrides the board base URL for the scripts.
 - Session links are public behind an unguessable id; do not paste them anywhere public.

@@ -8,5 +8,6 @@
 !scripts/
 !scripts/*.sh
 !.claude/
+!.claude/settings.json
 !.claude/commands/
 !.claude/commands/*.md
