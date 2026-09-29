@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# SessionStart hook: make RDKit importable for the agent's own checks (SMILES, stereo, atom
-# order). Quiet when it is already there; one line of context when it cannot be installed.
+# Make RDKit importable for the agent's own checks (SMILES, stereo, atom order). Claude Code
+# runs this as a SessionStart hook; other agents run it by hand (AGENTS.md). Quiet when it is
+# already there; one line of context when it cannot be installed.
 python3 -c "import rdkit" 2>/dev/null && exit 0
 for args in "-q rdkit" "-q --user rdkit" "-q --break-system-packages rdkit"; do
   python3 -m pip install $args >/dev/null 2>&1 && python3 -c "import rdkit" 2>/dev/null && {

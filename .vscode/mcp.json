@@ -1,0 +1,5 @@
+{
+  "servers": {
+    "elucidation": { "type": "http", "url": "https://mcp.anthony-tong.com/mcp" }
+  }
+}

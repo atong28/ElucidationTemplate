@@ -1,0 +1,7 @@
+# Codex CLI reads this once you trust the folder. A long peak pick can take ~30 s (the default
+# tool timeout is 60 s), and without an approval mode every board tool is blocked behind a
+# prompt (and refused outright in `codex exec`).
+[mcp_servers.elucidation]
+url = "https://mcp.anthony-tong.com/mcp"
+tool_timeout_sec = 300
+default_tools_approval_mode = "approve"

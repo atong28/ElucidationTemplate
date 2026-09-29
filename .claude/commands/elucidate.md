@@ -5,8 +5,8 @@ Run a structure elucidation on the board.
    If not, ask the chemist to create the session on https://board.anthony-tong.com, upload their
    data there and paste the Connect-agent text. (Only if they insist on starting here:
    `start_session(title=...)` and give them the board link it returns.)
-2. Call `start_session(session_id=...)`. It returns the operating protocol: follow it for the
-   whole session.
+2. Call `start_session(session_id=..., agent="Claude Code / <model>")`. It returns the
+   operating protocol: follow it for the whole session.
 3. If the chemist points you at data that is not on the board yet (a local path or URL), upload
    it first: `scripts/upload.sh <session_id> <path-or-url> "<what it is>"`.
 4. `begin_turn` → work the phases the data serves → `end_turn` with your question and the next
