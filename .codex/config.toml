@@ -1,7 +1,8 @@
-# Codex CLI reads this once you trust the folder. A long peak pick can take ~30 s (the default
-# tool timeout is 60 s), and without an approval mode every board tool is blocked behind a
-# prompt (and refused outright in `codex exec`).
-[mcp_servers.elucidation]
-url = "https://mcp.anthony-tong.com/mcp"
+# Codex CLI reads this once you trust the folder. Keep the agent's `elucidation` server out of
+# ~/.codex/config.toml (every folder reads that file): the verifier must not have its tools.
+# A long tool call can take ~30 s (the default timeout is 60 s), and without an approval mode
+# every tool is blocked behind a prompt (and refused outright in `codex exec`).
+[mcp_servers.elucidation-verifier]
+url = "https://mcp.anthony-tong.com/verify"
 tool_timeout_sec = 300
 default_tools_approval_mode = "approve"

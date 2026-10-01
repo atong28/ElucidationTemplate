@@ -1,5 +1,5 @@
 {
   "mcpServers": {
-    "elucidation": { "url": "https://mcp.anthony-tong.com/mcp" }
+    "elucidation-verifier": { "url": "https://mcp.anthony-tong.com/verify" }
   }
 }

@@ -1,49 +1,41 @@
-# Elucidation launcher
+# Independent verifier launcher
 
-This repository exists only so an AI coding agent (Claude Code, Codex CLI, Cursor, VS Code …)
-opens with the structure-elucidation MCP server (`elucidation`) configured and an upload
-script in place. It is not a workspace: nothing placed here is tracked and no state is kept.
-The board, the chemistry tools and all spectra processing live on the server.
+This branch of the repository opens an AI coding agent (Claude Code, Codex CLI, Cursor, VS Code
+…) as the **independent verifier** of a structure elucidation: the `elucidation-verifier` MCP
+server is configured, and nothing else. The verifier checks that what is on the board is
+chemically accurate and supported by the data. It does not do the elucidation, never edits
+the board, and does not see the chemist–agent conversation: it writes findings, and the
+chemist decides which ones the elucidation agent acts on.
 
-This branch connects the **elucidation agent**. The independent verifier is a separate agent
-with its own branch (`verifier`) and server (`elucidation-verifier`): if its tools
-(`start_verification`, `post_findings` …) are available to you as well, stop and tell the
-chemist, because the two must not share a session.
+## How a pass starts
+The chemist opens **Verifier → Connect verifier** in their board session and pastes that text
+to you. It carries your **verifier key** (`vk-…`), which is all you get: not the session id,
+not the board link. Then:
 
-## How a session starts
-Sessions start **on the board** (https://board.anthony-tong.com). The chemist creates one,
-uploads their data there, clicks **Connect agent** and pastes that text to you. It carries the
-session id. Then:
+1. If the elucidation agent's tools (`start_session`, `begin_turn`, `edit_peaks` …) are
+   available to you, stop and tell the chemist: the verifier must not have them.
+2. `start_verification(session_id="<your vk- key>", agent="<your app / model>")`. It returns
+   your **protocol**: read it and follow it.
+3. Check the board, `post_findings` for each problem, `end_verification` at the end.
 
-1. `start_session(session_id="<id from the pasted text>", agent="<your app / model>")`, e.g.
-   agent="Codex CLI / gpt-5.5" or "Claude Code / Claude Opus". It returns the operating
-   **protocol**: read it and follow it for the whole session.
-2. `begin_turn(session_id, focus_phase)` → work the phases → `end_turn(...)`, every turn.
+If the `elucidation-verifier` tools are not available, say so and stop: the app is not
+connected (see README.md).
 
-If the `elucidation` tools are not available to you, say so and stop: the app is not
-connected (see README.md). If the chemist starts you without the Connect-agent text, ask them
-to create the session on the board and paste it. Only if they insist on starting here:
-`start_session(title=...)` creates an empty session, and you give them its board link.
+## Your own copy of the data
+With a shell you can download what the board holds and check it yourself:
 
-## The one rule about data
-The tools see only what is uploaded to the session. Files on this machine, in this
-conversation or at a URL are invisible to the server until uploaded:
+    scripts/fetch.sh <vk-key> board
+    scripts/fetch.sh <vk-key> datasets
+    scripts/fetch.sh <vk-key> "datasets/<id>/data?lo=0&hi=10&n=20000" out.json
+    scripts/fetch.sh <vk-key> uploads/<stored name> raw.zip
 
-    scripts/upload.sh <session_id> <file | directory | URL> "<what it is>"
-
-Directories are zipped, URLs downloaded, nested zips opened server-side. After an upload,
-`list_datasets` catalogues and processes the spectra (NMR, MS, IR, UV). Never process
-instrument files by hand. Peak lists and reported data in any format (text, exports, images
-or PDFs of SI tables): upload them, read them with `read_upload`, and record them with
-`import_peak_list` or `import_reported_data`.
-
-## RDKit for your own checks
-If `python3 -c "import rdkit"` fails, run `scripts/setup-rdkit.sh` once (Claude Code runs it
-by itself at start-up). If it cannot install RDKit, tell the chemist; do not work around it by
-hand-editing structures. The board's own chemistry tools work either way.
+`scripts/setup-tools.sh` installs RDKit, nmrglue, numpy and scipy (Claude Code runs it at
+start-up). Use them for valence, formulas and CIP labels, and to re-process a raw FID when the
+board's processing is in doubt. Re-processing is for checking: report what differs as a
+finding. Your key opens only the verifier's routes; do not look for the session id.
 
 ## Notes
 - Cloud sandboxes restrict outbound network: the environment must allow
-  `mcp.anthony-tong.com` and `board.anthony-tong.com` (and PyPI for RDKit).
+  `mcp.anthony-tong.com` and `board.anthony-tong.com` (and PyPI for the Python tools).
 - `BOARD_URL` overrides the board base URL for the scripts.
-- Session links are public behind an unguessable id; do not paste them anywhere public.
+- Your key opens this session's data: do not paste it anywhere public.
