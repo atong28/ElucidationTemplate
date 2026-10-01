@@ -5,6 +5,11 @@ opens with the structure-elucidation MCP server (`elucidation`) configured and a
 script in place. It is not a workspace: nothing placed here is tracked and no state is kept.
 The board, the chemistry tools and all spectra processing live on the server.
 
+This branch connects the **elucidation agent**. The independent verifier is a separate agent
+with its own branch (`verifier`) and server (`elucidation-verifier`): if its tools
+(`start_verification`, `post_findings` …) are available to you as well, stop and tell the
+chemist, because the two must not share a session.
+
 ## How a session starts
 Sessions start **on the board** (https://board.anthony-tong.com). The chemist creates one,
 uploads their data there, clicks **Connect agent** and pastes that text to you. It carries the

@@ -9,6 +9,40 @@ Board server.
 The full, per-app setup guide (including chat apps like Claude and ChatGPT, which do not need
 this repository) is on the board: https://board.anthony-tong.com/?page=setup
 
+## Two agents, two branches
+- **`main`** (this branch) opens the **elucidation agent**: the `elucidation` server, which
+  works the board with the chemist.
+- **`verifier`** opens the **independent verifier**: only the `elucidation-verifier` server,
+  which checks the board for chemical accuracy against the data, never sees the chemist–agent
+  conversation and can only post findings. Run it in a separate session (ideally another
+  model), never in the same one as the agent.
+
+## Recommended: Claude Code on the web, from your own fork
+Each Claude Code on the web session runs in its own container, so the agent and the verifier
+cannot share connectors, files or memory: that keeps the verifier independent by
+construction. Each also has a shell, so it can download whole spectra and raw instrument
+files from the board over HTTPS and check them with its own code (RDKit, nmrglue), beyond
+what a tool call returns.
+
+1. **Fork** https://github.com/atong28/ElucidationTemplate on GitHub. Untick **Copy the
+   `main` branch only**, so your fork has the `verifier` branch too.
+2. At https://claude.ai/code, create an environment with network access **Custom**: allowed
+   domains `mcp.anthony-tong.com` and `board.anthony-tong.com`, and tick **Also include default
+   list of common package managers** (PyPI, for RDKit).
+3. **Agent:** start a session on your fork's `main` branch and paste the board's
+   **Connect agent** text.
+4. **Verifier:** start another session on your fork's `verifier` branch and paste the board's
+   **Verifier → Connect verifier** text.
+
+Keep your fork up to date with GitHub's **Sync fork** (on each branch).
+
+If your app can only open a repository's default branch, give the verifier a repository of its
+own made from the branch:
+
+    git clone -b verifier --single-branch https://github.com/atong28/ElucidationTemplate ElucidationVerifier
+    # create an empty ElucidationVerifier repository on GitHub, then:
+    cd ElucidationVerifier && git remote set-url origin git@github.com:<you>/ElucidationVerifier.git && git push -u origin verifier:main
+
 ## Use it
 1. On https://board.anthony-tong.com, create a session and upload your data (zipped
    instrument folders, JCAMP-DX, mzML / MGF, IR / UV exports, peak lists).
