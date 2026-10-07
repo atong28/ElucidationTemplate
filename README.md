@@ -2,8 +2,10 @@
 
 This branch opens an AI coding agent as the **independent verifier** of a structure
 elucidation on the Elucidation Board. Only the `elucidation-verifier` server is configured.
-The elucidation agent itself runs from the `main` branch, in a separate session: the two must
-never share one, or the verifier is no longer independent.
+The elucidation agent itself runs from the `main` branch, in a separate session. If your
+account also has the agent's connector (claude.ai connectors appear in Claude Code sessions),
+the verifier leaves those tools alone; it holds only a verifier key, so they could not reach
+the session anyway.
 
 The verifier checks the board against the data and posts findings, which the chemist accepts
 or dismisses on the session's Verifier tab. It never edits the board and never sees the

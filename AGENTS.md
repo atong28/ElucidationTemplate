@@ -13,7 +13,9 @@ to you. It carries your **verifier key** (`vk-…`), which is all you get: not t
 not the board link. Then:
 
 1. If the elucidation agent's tools (`start_session`, `begin_turn`, `edit_peaks` …) are
-   available to you, stop and tell the chemist: the verifier must not have them.
+   also available to you (usually an account-wide connector, which appears in every
+   session), **never call them**. They are not yours, and without the session id they
+   cannot reach this session anyway. Carry on with your own tools.
 2. `start_verification(session_id="<your vk- key>", agent="<your app / model>")`. It returns
    your **protocol**: read it and follow it.
 3. Check the board, `post_findings` for each problem, `end_verification` at the end.
