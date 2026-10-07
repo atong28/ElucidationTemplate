@@ -7,8 +7,7 @@ The board, the chemistry tools and all spectra processing live on the server.
 
 This branch connects the **elucidation agent**. The independent verifier is a separate agent
 with its own branch (`verifier`) and server (`elucidation-verifier`): if its tools
-(`start_verification`, `post_findings` …) are available to you as well, stop and tell the
-chemist, because the two must not share a session.
+(`start_verification`, `post_findings` …) are available to you as well, never call them.
 
 ## How a session starts
 Sessions start **on the board** (https://board.anthony-tong.com). The chemist creates one,
